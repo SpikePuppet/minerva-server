@@ -1,0 +1,8 @@
+tacticname: NormalForm
+packages:
+- name: rhys-hello-world
+  version: 2.0.1
+- name: mongo-hello-world
+  version: 1.4.1
+- name: postgres-hello-world
+  version: 1.4.1
