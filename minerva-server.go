@@ -5,15 +5,9 @@ import (
 	"io/ioutil"
 	"log"
 
+	"github.com/gin-gonic/gin"
 	"gopkg.in/yaml.v2"
 )
-
-var testTactic = `
-tacticname: NormalForm
-packages:
-  - name: pooledenergy-hello-world
-    version: 2.0.1
-`
 
 type Package struct {
 	Name    string
@@ -26,6 +20,20 @@ type Tactic struct {
 }
 
 func main() {
+	router := gin.Default()
+
+	router.GET("/health", func(context *gin.Context) {
+		context.JSON(200, gin.H{
+			"message": "Minerva Server is running.",
+		})
+	})
+
+	router.GET("/test-yaml", runGoYamlTest)
+
+	router.Run()
+}
+
+func runGoYamlTest(context *gin.Context) {
 	testYaml := Tactic{}
 
 	tacticFile, err := ioutil.ReadFile("tactic.yaml")
@@ -37,7 +45,7 @@ func main() {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
-	testYaml.Packages = append(testYaml.Packages, Package{Name: "postgres-hello-world", Version: "1.4.1"})
+	testYaml.Packages = append(testYaml.Packages, Package{Name: "dotnet-hello-world", Version: "7.2.1"})
 	fmt.Printf("--- T:\n%v\n\n", testYaml)
 
 	formattedYaml, err := yaml.Marshal(&testYaml)
@@ -50,4 +58,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
+
+	context.JSON(200, gin.H{
+		"message": string(formattedYaml),
+	})
+
 }
